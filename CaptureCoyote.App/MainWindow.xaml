@@ -1,0 +1,627 @@
+<Window x:Class="CaptureCoyote.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:coreEnums="clr-namespace:CaptureCoyote.Core.Enums;assembly=CaptureCoyote.Core"
+        Title="CaptureCoyote"
+        Width="1100"
+        Height="760"
+        MinWidth="960"
+        MinHeight="680"
+        Background="#FF0C1118"
+        Foreground="White"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style x:Key="LauncherCaptureButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="Padding" Value="16,13" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#FF1884C4" />
+            <Setter Property="BorderBrush" Value="#441884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF2397DA" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF1172AB" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="LauncherUtilityButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="Padding" Value="16,13" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#FF176A8D" />
+            <Setter Property="BorderBrush" Value="#441D96C8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF1E7EA7" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF135B79" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="LauncherRecoveryButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="Padding" Value="16,13" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#FF2A7A63" />
+            <Setter Property="BorderBrush" Value="#4444B997" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF328B72" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF215E4D" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="LauncherCleanupButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="14,10" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#FF8A5A10" />
+            <Setter Property="BorderBrush" Value="#66F5A623" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF9C6712" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF71490C" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="LauncherSupportButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="Foreground" Value="#FFFF63B0" />
+            <Setter Property="Background" Value="#221A0E19" />
+            <Setter Property="BorderBrush" Value="#66FF63B0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#33231523" />
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#88FF63B0" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#441A0E19" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="LauncherIconBadgeStyle" TargetType="Border">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="Background" Value="#20FFFFFF" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+        </Style>
+        <Style x:Key="LauncherActionLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="WorkspaceItemButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="#FF0F171F" />
+            <Setter Property="BorderBrush" Value="#221884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF15212C" />
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#551884C4" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF0E2634" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="420" />
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,0,24">
+            <StackPanel Orientation="Horizontal">
+                <Border x:Name="BrandLogoContainer"
+                        Width="60"
+                        Height="60"
+                        Margin="0,0,16,0"
+                        Padding="4"
+                        Background="#1A1884C4"
+                        CornerRadius="18"
+                        Visibility="Collapsed">
+                    <Image x:Name="BrandLogoImage" Stretch="Uniform" Visibility="Collapsed" />
+                </Border>
+                <StackPanel>
+                    <TextBlock FontSize="32" FontWeight="SemiBold" Text="CaptureCoyote" />
+                    <TextBlock Margin="0,6,0,0" Foreground="#99FFFFFF" Text="Fast capture, modern annotation, editable screenshots." />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Grid.Column="0"
+                Padding="22"
+                Background="#FF111821"
+                CornerRadius="22">
+            <StackPanel>
+                <TextBlock FontSize="22" FontWeight="SemiBold" Text="Capture" />
+                <TextBlock Margin="0,4,0,18" Foreground="#99FFFFFF" Text="Remembered mode, optional delay, and keyboard-first hotkeys." />
+
+                <TextBlock Foreground="#99FFFFFF" Text="Delay" />
+                <ComboBox Margin="0,8,0,20"
+                          Width="140"
+                          HorizontalAlignment="Left"
+                          DisplayMemberPath="Label"
+                          SelectedValuePath="Seconds"
+                          ItemsSource="{Binding DelayOptions}"
+                          SelectedValue="{Binding SelectedDelaySeconds}" />
+
+                <Button Style="{StaticResource LauncherCaptureButtonStyle}"
+                        Command="{Binding CaptureCommand}"
+                        CommandParameter="{x:Static coreEnums:CaptureMode.Region}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource LauncherIconBadgeStyle}">
+                            <Viewbox Stretch="Uniform">
+                                <Canvas Width="20" Height="20">
+                                    <Line X1="10" Y1="2" X2="10" Y2="18" Stroke="White" StrokeThickness="1.4" />
+                                    <Line X1="2" Y1="10" X2="18" Y2="10" Stroke="White" StrokeThickness="1.4" />
+                                    <Rectangle Canvas.Left="5" Canvas.Top="5" Width="10" Height="10"
+                                               Stroke="White" StrokeThickness="1.2" StrokeDashArray="2,2" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Style="{StaticResource LauncherActionLabelStyle}" Text="Region Capture" />
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource LauncherCaptureButtonStyle}"
+                        Command="{Binding CaptureCommand}"
+                        CommandParameter="{x:Static coreEnums:CaptureMode.Window}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource LauncherIconBadgeStyle}">
+                            <Viewbox Stretch="Uniform">
+                                <Canvas Width="20" Height="20">
+                                    <Rectangle Canvas.Left="3" Canvas.Top="4" Width="14" Height="11"
+                                               RadiusX="2" RadiusY="2"
+                                               Stroke="White" StrokeThickness="1.4" />
+                                    <Line X1="7" Y1="16.5" X2="13" Y2="16.5" Stroke="White" StrokeThickness="1.4" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Style="{StaticResource LauncherActionLabelStyle}" Text="Window Capture" />
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource LauncherCaptureButtonStyle}"
+                        Command="{Binding CaptureCommand}"
+                        CommandParameter="{x:Static coreEnums:CaptureMode.Scrolling}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource LauncherIconBadgeStyle}">
+                            <Viewbox Stretch="Uniform">
+                                <Canvas Width="20" Height="20">
+                                    <Rectangle Canvas.Left="3" Canvas.Top="3.5" Width="14" Height="10.5"
+                                               RadiusX="2" RadiusY="2"
+                                               Stroke="White" StrokeThickness="1.3" />
+                                    <Path Data="M10,16 L7.5,12.5 H9.4 V8.7 H10.6 V12.5 H12.5 Z"
+                                          Fill="White" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Style="{StaticResource LauncherActionLabelStyle}" Text="Scrolling Capture" />
+                    </StackPanel>
+                </Button>
+                <Button Margin="0,0,0,18"
+                        Style="{StaticResource LauncherCaptureButtonStyle}"
+                        Command="{Binding CaptureCommand}"
+                        CommandParameter="{x:Static coreEnums:CaptureMode.FullScreen}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource LauncherIconBadgeStyle}">
+                            <Viewbox Stretch="Uniform">
+                                <Canvas Width="20" Height="20">
+                                    <Rectangle Canvas.Left="2.5" Canvas.Top="3.5" Width="15" Height="12"
+                                               RadiusX="2" RadiusY="2"
+                                               Stroke="White" StrokeThickness="1.4" />
+                                    <Line X1="6" Y1="6" X2="9" Y2="6" Stroke="White" StrokeThickness="1.2" />
+                                    <Line X1="11" Y1="6" X2="14" Y2="6" Stroke="White" StrokeThickness="1.2" />
+                                    <Line X1="6" Y1="9" X2="14" Y2="9" Stroke="White" StrokeThickness="1.2" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Style="{StaticResource LauncherActionLabelStyle}" Text="Full-Screen Capture" />
+                    </StackPanel>
+                </Button>
+
+                <Separator Margin="0,0,0,18" />
+
+                <Grid Margin="0,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                            Margin="0"
+                            Style="{StaticResource LauncherUtilityButtonStyle}"
+                            Command="{Binding OpenSettingsCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource LauncherIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="20" Height="20">
+                                        <Ellipse Canvas.Left="6" Canvas.Top="6" Width="8" Height="8"
+                                                 Stroke="White" StrokeThickness="1.3" />
+                                        <Line X1="10" Y1="2.5" X2="10" Y2="5" Stroke="White" StrokeThickness="1.2" />
+                                        <Line X1="10" Y1="15" X2="10" Y2="17.5" Stroke="White" StrokeThickness="1.2" />
+                                        <Line X1="2.5" Y1="10" X2="5" Y2="10" Stroke="White" StrokeThickness="1.2" />
+                                        <Line X1="15" Y1="10" X2="17.5" Y2="10" Stroke="White" StrokeThickness="1.2" />
+                                        <Line X1="4.2" Y1="4.2" X2="5.9" Y2="5.9" Stroke="White" StrokeThickness="1.2" />
+                                        <Line X1="14.1" Y1="14.1" X2="15.8" Y2="15.8" Stroke="White" StrokeThickness="1.2" />
+                                        <Line X1="14.1" Y1="5.9" X2="15.8" Y2="4.2" Stroke="White" StrokeThickness="1.2" />
+                                        <Line X1="4.2" Y1="15.8" X2="5.9" Y2="14.1" Stroke="White" StrokeThickness="1.2" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource LauncherActionLabelStyle}" Text="Settings" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Column="2"
+                            Margin="0"
+                            Style="{StaticResource LauncherUtilityButtonStyle}"
+                            Command="{Binding OpenProjectCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource LauncherIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="20" Height="20">
+                                        <Path Data="M2.5,7 L8,7 L9.8,9.5 L17.5,9.5 L17.5,15.5 L2.5,15.5 Z"
+                                              Stroke="White" StrokeThickness="1.4" Fill="Transparent" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource LauncherActionLabelStyle}" Text="Open Project" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Grid.Column="2"
+                Padding="20"
+                Background="#FF111821"
+                CornerRadius="22">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel>
+                    <TextBlock FontSize="22" FontWeight="SemiBold" Text="Last Capture" />
+                    <TextBlock Margin="0,4,0,0" Foreground="#99FFFFFF" Text="Preview the latest snip, recover drafts, or jump into the search browser." />
+                </StackPanel>
+
+                <Border Grid.Row="1"
+                        Height="228"
+                        Margin="0,18,0,14"
+                        Background="#FF0E141C"
+                        CornerRadius="18"
+                        BorderBrush="#221884C4"
+                        BorderThickness="1">
+                    <Image Source="{Binding LastPreview}" Stretch="Uniform" />
+                </Border>
+
+                <Border Grid.Row="2"
+                        Padding="14"
+                        Background="#66111821"
+                        CornerRadius="14">
+                    <StackPanel>
+                        <TextBlock FontWeight="SemiBold" Text="{Binding LastCaptureName}" />
+                        <TextBlock Margin="0,4,0,0" Foreground="#99FFFFFF" Text="{Binding LastCaptureMeta}" TextWrapping="Wrap" />
+                        <TextBlock Margin="0,8,0,0"
+                                   Foreground="#77FFFFFF"
+                                   Text="Use the editor or review flow when you want OCR text, copy actions, or deeper follow-up." 
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Row="3"
+                        Margin="0,14,0,0"
+                        Padding="16"
+                        Background="#66111821"
+                        CornerRadius="14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock FontSize="18" FontWeight="SemiBold" Text="Search Snips" />
+                            <TextBlock Margin="0,4,0,0"
+                                       Foreground="#99FFFFFF"
+                                       Text="{Binding WorkspaceSummaryText}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <Button Grid.Column="1"
+                                Margin="16,0,0,0"
+                                Style="{StaticResource LauncherUtilityButtonStyle}"
+                                VerticalAlignment="Center"
+                                Command="{Binding OpenSearchWindowCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource LauncherIconBadgeStyle}">
+                                    <Viewbox Stretch="Uniform">
+                                        <Canvas Width="20" Height="20">
+                                            <Ellipse Canvas.Left="4" Canvas.Top="4" Width="8" Height="8"
+                                                     Stroke="White" StrokeThickness="1.4" />
+                                            <Line X1="11.5" Y1="11.5" X2="16.5" Y2="16.5"
+                                                  Stroke="White" StrokeThickness="1.4" />
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                                <TextBlock Style="{StaticResource LauncherActionLabelStyle}" Text="Browse Snips" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="4"
+                        Margin="0,14,0,0"
+                        Padding="14"
+                        Visibility="{Binding HasOldTemporarySnips, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Background="#332B1D0B"
+                        BorderBrush="#55F5A623"
+                        BorderThickness="1"
+                        CornerRadius="14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock FontWeight="SemiBold" Text="{Binding OldTemporarySnipHintText}" />
+                            <TextBlock Margin="0,4,0,0"
+                                       Foreground="#E6F3D8BA"
+                                       Text="{Binding OldTemporarySnipDetailText}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <Button Grid.Column="1"
+                                Margin="14,0,0,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource LauncherCleanupButtonStyle}"
+                                Command="{Binding CleanTemporarySnipsCommand}"
+                                Content="Clean Now" />
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="5"
+                        Margin="0,14,0,0"
+                        Padding="12"
+                        Visibility="{Binding HasRecoveryDraft, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Background="#66111821"
+                        CornerRadius="14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="84" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Width="72"
+                                Height="52"
+                                Background="#FF0E141C"
+                                BorderBrush="#221884C4"
+                                BorderThickness="1"
+                                CornerRadius="10">
+                            <Image Source="{Binding LatestRecoveryDraft.Thumbnail}" Stretch="UniformToFill" />
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                            <TextBlock FontWeight="SemiBold" Text="{Binding LatestRecoveryDraft.Title}" />
+                            <TextBlock Margin="0,4,0,0" Foreground="#99FFFFFF" Text="{Binding LatestRecoveryDraft.Subtitle}" />
+                            <TextBlock Margin="0,4,0,0" Foreground="#77FFFFFF" Text="{Binding LatestRecoveryDraft.TimestampLabel}" />
+                            <TextBlock Margin="0,6,0,0"
+                                       Foreground="#CCFFFFFF"
+                                       MaxHeight="38"
+                                       Text="{Binding LatestRecoveryDraft.PreviewText}"
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <Button Grid.Column="2"
+                                Margin="14,0,0,0"
+                                Style="{StaticResource LauncherRecoveryButtonStyle}"
+                                VerticalAlignment="Center"
+                                Command="{Binding RestoreRecoveryDraftCommand}"
+                                CommandParameter="{Binding LatestRecoveryDraft.Draft}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource LauncherIconBadgeStyle}">
+                                    <Viewbox Stretch="Uniform">
+                                        <Canvas Width="20" Height="20">
+                                            <Path Data="M5.5,6.5 L3,9 L5.5,11.5"
+                                                  Stroke="White" StrokeThickness="1.4"
+                                                  StrokeLineJoin="Round"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round" />
+                                            <Path Data="M3.5,9 H11.5 C14.2,9 15.8,10.6 15.8,13.3"
+                                                  Stroke="White" StrokeThickness="1.4"
+                                                  StrokeLineJoin="Round"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round" />
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                                <TextBlock Style="{StaticResource LauncherActionLabelStyle}" Text="Restore Draft" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="7"
+                        Margin="0,14,0,0"
+                        Padding="14"
+                        Background="#66111821"
+                        CornerRadius="14">
+                    <TextBlock Foreground="#CCFFFFFF" Text="{Binding StatusText}" TextWrapping="Wrap" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2"
+              Grid.ColumnSpan="3"
+              Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Foreground="#66FFFFFF"
+                       Text="Default hotkeys: Ctrl+Shift+4 region, Ctrl+Shift+5 window, Ctrl+Shift+6 full screen." />
+
+            <StackPanel Grid.Column="1"
+                        Margin="18,0,0,0"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding HasSupportLink, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0,0,10,0"
+                           VerticalAlignment="Center"
+                           Foreground="#99FFFFFF"
+                           FontWeight="SemiBold"
+                           Text="CaptureCoyote is free to use." />
+                <Button Command="{Binding OpenSupportLinkCommand}"
+                        Style="{StaticResource LauncherSupportButtonStyle}"
+                        Content="Support CaptureCoyote" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

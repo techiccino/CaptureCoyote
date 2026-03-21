@@ -1,0 +1,1254 @@
+<Window x:Class="CaptureCoyote.Editor.Views.EditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:CaptureCoyote.Editor.Controls"
+        xmlns:converters="clr-namespace:CaptureCoyote.Editor.Converters"
+        xmlns:coreEnums="clr-namespace:CaptureCoyote.Core.Enums;assembly=CaptureCoyote.Core"
+        Title="CaptureCoyote Editor"
+        Width="1500"
+        Height="920"
+        MinWidth="1100"
+        MinHeight="720"
+        Background="#FF0C1118"
+        Foreground="White"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:HexToBrushConverter x:Key="HexToBrushConverter" />
+        <converters:AnnotationSummaryConverter x:Key="AnnotationSummaryConverter" />
+        <converters:LayerDisplayNameConverter x:Key="LayerDisplayNameConverter" />
+        <Style x:Key="ToolButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#141F2B36" />
+            <Setter Property="BorderBrush" Value="#331884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="16"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#223B4E61" />
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#661884C4" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#33456279" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MiniActionButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="36" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#101A232D" />
+            <Setter Property="BorderBrush" Value="#261884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1B2B3A48" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#22364558" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="HeaderActionButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,0,8,8" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#FF1884C4" />
+            <Setter Property="BorderBrush" Value="#551884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF2397DA" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF1172AB" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#77FFFFFF" />
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1C2530" />
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#22303C49" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SideActionButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#101A232D" />
+            <Setter Property="BorderBrush" Value="#261884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1B2B3A48" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#22364558" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PresetButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#101A232D" />
+            <Setter Property="BorderBrush" Value="#261884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#18263543" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#223A5772" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ToolLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style x:Key="ToolShortcutStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Foreground" Value="#88FFFFFF" />
+            <Setter Property="Margin" Value="0,1,0,0" />
+        </Style>
+        <Style x:Key="ToolIconBadgeStyle" TargetType="Border">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="Background" Value="#1A1884C4" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+        <Style x:Key="HeaderActionIconBadgeStyle" TargetType="Border">
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Background" Value="#1FFFFFFF" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+        <Style x:Key="ActionLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style x:Key="ColorSwatchButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+            <Setter Property="BorderBrush" Value="#22FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style x:Key="LayerListStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="#FF0F171F" />
+            <Setter Property="BorderBrush" Value="#221884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="6" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style x:Key="LayerListItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="ItemBorder"
+                                Background="#101A232D"
+                                BorderBrush="#261884C4"
+                                BorderThickness="1"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#18263543" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#223A5772" />
+                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#FF7DD3FC" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SidebarExpanderHeaderButtonStyle" TargetType="ToggleButton">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#101A232D" />
+            <Setter Property="BorderBrush" Value="#261884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="HeaderBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14"
+                                Padding="12,10">
+                            <DockPanel LastChildFill="True">
+                                <Path x:Name="ChevronPath"
+                                      Width="10"
+                                      Height="10"
+                                      Margin="0,0,10,0"
+                                      Data="M2,3.5 L6,7.5 L10,3.5"
+                                      Stroke="#CCFFFFFF"
+                                      StrokeThickness="1.8"
+                                      StrokeLineJoin="Round"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Stretch="Uniform"
+                                      RenderTransformOrigin="0.5,0.5">
+                                    <Path.RenderTransform>
+                                        <RotateTransform Angle="-90" />
+                                    </Path.RenderTransform>
+                                </Path>
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </DockPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HeaderBorder" Property="Background" Value="#18263543" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="HeaderBorder" Property="Background" Value="#18263543" />
+                                <Setter TargetName="ChevronPath" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="0" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SidebarExpanderStyle" TargetType="Expander">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Expander">
+                        <Border Background="#101A232D"
+                                BorderBrush="#261884C4"
+                                BorderThickness="1"
+                                CornerRadius="14">
+                            <DockPanel LastChildFill="True">
+                                <ToggleButton DockPanel.Dock="Top"
+                                              Focusable="False"
+                                              IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                              Style="{StaticResource SidebarExpanderHeaderButtonStyle}">
+                                    <ContentPresenter ContentSource="Header" />
+                                </ToggleButton>
+                                <ContentPresenter x:Name="ExpandSite"
+                                                  Margin="12,0,12,12"
+                                                  Visibility="Collapsed" />
+                            </DockPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SidebarThumbStyle" TargetType="Thumb">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border Background="#991884C4"
+                                BorderBrush="#CC7DD3FC"
+                                BorderThickness="1"
+                                CornerRadius="4" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SidebarScrollBarStyle" TargetType="ScrollBar">
+            <Setter Property="Width" Value="10" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Margin="2,0,0,0" Background="Transparent">
+                            <Track x:Name="PART_Track"
+                                   IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  IsTabStop="False"
+                                                  Opacity="0" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource SidebarThumbStyle}" />
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  IsTabStop="False"
+                                                  Opacity="0" />
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
+        <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}" />
+        <KeyBinding Gesture="Delete" Command="{Binding DeleteSelectionCommand}" />
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveProjectCommand}" />
+        <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding SaveImageAsCommand}" />
+        <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}" />
+        <KeyBinding Key="V" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Select}" />
+        <KeyBinding Key="A" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Arrow}" />
+        <KeyBinding Key="R" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Rectangle}" />
+        <KeyBinding Key="E" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Ellipse}" />
+        <KeyBinding Key="L" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Line}" />
+        <KeyBinding Key="T" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Text}" />
+        <KeyBinding Key="Q" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Callout}" />
+        <KeyBinding Key="N" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Step}" />
+        <KeyBinding Key="H" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Highlight}" />
+        <KeyBinding Key="B" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Blur}" />
+        <KeyBinding Key="C" Command="{Binding SelectToolCommand}" CommandParameter="{x:Static coreEnums:EditorTool.Crop}" />
+    </Window.InputBindings>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="154" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="290" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Margin="0,0,0,16"
+                Padding="18"
+                Background="#FF111821"
+                CornerRadius="18">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Left"
+                            Orientation="Horizontal">
+                    <Border x:Name="BrandLogoContainer"
+                            Width="52"
+                            Height="52"
+                            Margin="0,0,14,0"
+                            Padding="4"
+                            Background="#1A1884C4"
+                            CornerRadius="16"
+                            Visibility="Collapsed">
+                        <Image x:Name="BrandLogoImage" Stretch="Uniform" Visibility="Collapsed" />
+                    </Border>
+                    <StackPanel>
+                        <TextBlock Text="{Binding DisplayTitle}"
+                                   FontSize="24"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Margin="0,4,0,0"
+                                   Foreground="#99FFFFFF"
+                                   Text="Capture -> Explain -> Save or Share" />
+                    </StackPanel>
+                </StackPanel>
+
+                <WrapPanel DockPanel.Dock="Right"
+                           Margin="18,0,0,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center">
+                    <Button Style="{StaticResource HeaderActionButtonStyle}" Command="{Binding CopyCommand}" ToolTip="Copy the final image">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource HeaderActionIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="18" Height="18">
+                                        <Rectangle Canvas.Left="3" Canvas.Top="5" Width="9" Height="9"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                        <Rectangle Canvas.Left="6" Canvas.Top="2" Width="9" Height="9"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource ActionLabelStyle}" Text="Copy" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource HeaderActionButtonStyle}" Command="{Binding QuickSaveCommand}" ToolTip="Quick save to the default folder">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource HeaderActionIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="18" Height="18">
+                                        <Rectangle Canvas.Left="3" Canvas.Top="3" Width="12" Height="12"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                        <Rectangle Canvas.Left="5" Canvas.Top="4.5" Width="8" Height="3"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="6" Canvas.Top="10" Width="6" Height="4"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource ActionLabelStyle}" Text="Quick Save" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource HeaderActionButtonStyle}" Command="{Binding SaveImageAsCommand}" ToolTip="Save a flat image to a chosen location">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource HeaderActionIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="18" Height="18">
+                                        <Line X1="9" Y1="3" X2="9" Y2="11"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.6" />
+                                        <Polygon Points="6,9 9,13 12,9"
+                                                 Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="4" Canvas.Top="13" Width="10" Height="2"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource ActionLabelStyle}" Text="Save As" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource HeaderActionButtonStyle}" Command="{Binding SaveProjectCommand}" ToolTip="Save the editable CaptureCoyote project">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource HeaderActionIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="18" Height="18">
+                                        <Rectangle Canvas.Left="3" Canvas.Top="9" Width="9" Height="6"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Rectangle Canvas.Left="5" Canvas.Top="6" Width="9" Height="6"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Rectangle Canvas.Left="7" Canvas.Top="3" Width="9" Height="6"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource ActionLabelStyle}" Text="Save Editable" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource HeaderActionButtonStyle}" Command="{Binding SaveProjectAsCommand}" ToolTip="Save the editable project to a new file">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource HeaderActionIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="18" Height="18">
+                                        <Rectangle Canvas.Left="3" Canvas.Top="9" Width="9" Height="6"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Rectangle Canvas.Left="5" Canvas.Top="6" Width="9" Height="6"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Rectangle Canvas.Left="7" Canvas.Top="3" Width="9" Height="6"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Line X1="13.5" Y1="11" X2="13.5" Y2="16"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                        <Line X1="11" Y1="13.5" X2="16" Y2="13.5"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource ActionLabelStyle}" Text="Save Editable As" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource HeaderActionButtonStyle}" Command="{Binding OpenContainingFolderCommand}" ToolTip="Open the folder containing the last export">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource HeaderActionIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="18" Height="18">
+                                        <Path Data="M2,6 L7,6 L8.8,8 L16,8 L16,14.5 L2,14.5 Z"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="1.4"
+                                              Fill="Transparent" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource ActionLabelStyle}" Text="Open Folder" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource HeaderActionButtonStyle}" Command="{Binding ShowDetectedTextCommand}" ToolTip="Open detected text from this capture">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource HeaderActionIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="18" Height="18">
+                                        <Rectangle Canvas.Left="3" Canvas.Top="3" Width="8" Height="11" RadiusX="1.5" RadiusY="1.5"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Line X1="5" Y1="6" X2="9" Y2="6"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Line X1="5" Y1="8.5" X2="9" Y2="8.5"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Line X1="5" Y1="11" X2="7.5" Y2="11"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Ellipse Canvas.Left="10.25" Canvas.Top="9.25" Width="4.5" Height="4.5"
+                                                 Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                        <Line X1="13.8" Y1="13.8" X2="16" Y2="16"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource ActionLabelStyle}" Text="OCR Text" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource HeaderActionButtonStyle}" Command="{Binding PinToScreenCommand}" ToolTip="Open the current capture in a small always-on-top reference window">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource HeaderActionIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="18" Height="18">
+                                        <Polygon Points="7,3 12,3 14,7 5,7"
+                                                 Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                 StrokeThickness="1.2"
+                                                 Fill="Transparent" />
+                                        <Line X1="9.5" Y1="7" X2="9.5" Y2="14"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                        <Line X1="7" Y1="14" X2="12" Y2="14"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Style="{StaticResource ActionLabelStyle}" Text="Pin to Screen" />
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Grid.Column="0"
+                Margin="0,0,14,0"
+                Padding="12"
+                Background="#FF111821"
+                CornerRadius="18">
+            <StackPanel>
+                    <TextBlock Margin="4,2,0,12"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Text="Tools" />
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Select}"
+                            ToolTip="Select and move existing annotations (V)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Select}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Rectangle Canvas.Left="6" Canvas.Top="6" Width="12" Height="12" RadiusX="1.5" RadiusY="1.5"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.6" />
+                                        <Rectangle Canvas.Left="3" Canvas.Top="3" Width="3" Height="3"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="18" Canvas.Top="3" Width="3" Height="3"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="3" Canvas.Top="18" Width="3" Height="3"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="18" Canvas.Top="18" Width="3" Height="3"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Select" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#7DD3FC" Text="V" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Arrow}"
+                            ToolTip="Draw arrows (A)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Arrow}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Line X1="5" Y1="18" X2="18" Y2="7"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="2.2"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round" />
+                                        <Polygon Points="14,7 20,7 20,13"
+                                                 Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Arrow" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#FDBA74" Text="A" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Rectangle}"
+                            ToolTip="Draw rectangles (R)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Rectangle}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Rectangle Canvas.Left="4" Canvas.Top="6" Width="16" Height="12" RadiusX="2" RadiusY="2"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.8" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Rectangle" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#FCA5A5" Text="R" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Ellipse}"
+                            ToolTip="Draw ellipses (E)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Ellipse}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Ellipse Canvas.Left="4" Canvas.Top="6" Width="16" Height="12"
+                                                 Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.8" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Ellipse" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#A7F3D0" Text="E" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Line}"
+                            ToolTip="Draw lines (L)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Line}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Line X1="5" Y1="18" X2="19" Y2="8"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="2.2"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Line" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#BFDBFE" Text="L" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Text}"
+                            ToolTip="Add text (T)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Text}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <TextBlock FontSize="17"
+                                               FontWeight="Bold"
+                                               Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                               Text="T"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center" />
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Text" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#FDE68A" Text="T" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Callout}"
+                            ToolTip="Add a callout box with a leader line (Q)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Callout}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Line X1="4.5" Y1="18" X2="9.5" Y2="14"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="1.8"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round" />
+                                        <Ellipse Canvas.Left="3" Canvas.Top="16.2" Width="3" Height="3"
+                                                 Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="8" Canvas.Top="5" Width="11" Height="8" RadiusX="2.5" RadiusY="2.5"
+                                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.5" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Callout" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#C4B5FD" Text="Q" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Step}"
+                            ToolTip="Add numbered step markers (N)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Step}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Grid>
+                                        <Ellipse Width="16"
+                                                 Height="16"
+                                                 Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                 StrokeThickness="1.8" />
+                                        <TextBlock FontSize="11"
+                                                   FontWeight="Bold"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Text="1" />
+                                    </Grid>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Step" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#FACC15" Text="N" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Highlight}"
+                            ToolTip="Highlight an area (H)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Highlight}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Rectangle Canvas.Left="4" Canvas.Top="8" Width="16" Height="8" RadiusX="2" RadiusY="2"
+                                                   Fill="#BFFFDD55" />
+                                        <Line X1="4" Y1="18" X2="20" Y2="18"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="1.4" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Highlight" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#FFF27A" Text="H" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Blur}"
+                            ToolTip="Pixelate or blur an area (B)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Blur}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Rectangle Canvas.Left="4" Canvas.Top="4" Width="4" Height="4"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="10" Canvas.Top="4" Width="4" Height="4" Fill="#88FFFFFF" />
+                                        <Rectangle Canvas.Left="16" Canvas.Top="4" Width="4" Height="4"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="4" Canvas.Top="10" Width="4" Height="4" Fill="#88FFFFFF" />
+                                        <Rectangle Canvas.Left="10" Canvas.Top="10" Width="4" Height="4"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="16" Canvas.Top="10" Width="4" Height="4" Fill="#88FFFFFF" />
+                                        <Rectangle Canvas.Left="4" Canvas.Top="16" Width="4" Height="4"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                        <Rectangle Canvas.Left="10" Canvas.Top="16" Width="4" Height="4" Fill="#88FFFFFF" />
+                                        <Rectangle Canvas.Left="16" Canvas.Top="16" Width="4" Height="4"
+                                                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Pixelate" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#93C5FD" Text="B" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding SelectToolCommand}"
+                            CommandParameter="{x:Static coreEnums:EditorTool.Crop}"
+                            ToolTip="Crop the visible area (C)">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource ToolButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTool}" Value="{x:Static coreEnums:EditorTool.Crop}">
+                                        <Setter Property="Background" Value="#FF1884C4" />
+                                        <Setter Property="BorderBrush" Value="#FF7DD3FC" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource ToolIconBadgeStyle}">
+                                <Viewbox Stretch="Uniform">
+                                    <Canvas Width="24" Height="24">
+                                        <Line X1="7" Y1="4" X2="7" Y2="17"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="2" />
+                                        <Line X1="7" Y1="17" X2="19" Y2="17"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="2" />
+                                        <Line X1="11" Y1="7" X2="11" Y2="20"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="2" />
+                                        <Line X1="4" Y1="7" X2="11" Y2="7"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                              StrokeThickness="2" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource ToolLabelStyle}" Text="Crop" />
+                                <TextBlock Style="{StaticResource ToolShortcutStyle}" Foreground="#86EFAC" Text="C" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+
+                    <Separator Margin="0,10,0,10" />
+                    <WrapPanel Margin="2,0,0,0">
+                        <Button Style="{StaticResource MiniActionButtonStyle}" Command="{Binding UndoCommand}" ToolTip="Undo (Ctrl+Z)">
+                            <Viewbox Stretch="Uniform" Width="16" Height="16">
+                                <Canvas Width="18" Height="18">
+                                    <Path Data="M7,4 L3,8 L7,12"
+                                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                          StrokeThickness="1.6"
+                                          Fill="Transparent"
+                                          StrokeLineJoin="Round"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round" />
+                                    <Path Data="M4,8 H11 C14,8 15,10 15,12"
+                                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                          StrokeThickness="1.6"
+                                          Fill="Transparent"
+                                          StrokeLineJoin="Round"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round" />
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <Button Style="{StaticResource MiniActionButtonStyle}" Command="{Binding RedoCommand}" ToolTip="Redo (Ctrl+Y)">
+                            <Viewbox Stretch="Uniform" Width="16" Height="16">
+                                <Canvas Width="18" Height="18">
+                                    <Path Data="M11,4 L15,8 L11,12"
+                                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                          StrokeThickness="1.6"
+                                          Fill="Transparent"
+                                          StrokeLineJoin="Round"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round" />
+                                    <Path Data="M4,12 C4,10 5,8 8,8 H14"
+                                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                          StrokeThickness="1.6"
+                                          Fill="Transparent"
+                                          StrokeLineJoin="Round"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round" />
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <Button Style="{StaticResource MiniActionButtonStyle}" Command="{Binding DuplicateSelectionCommand}" ToolTip="Duplicate selected annotation (Ctrl+D)">
+                            <Viewbox Stretch="Uniform" Width="16" Height="16">
+                                <Canvas Width="18" Height="18">
+                                    <Rectangle Canvas.Left="3.5" Canvas.Top="5.5" Width="8" Height="8"
+                                               Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                    <Rectangle Canvas.Left="6.5" Canvas.Top="2.5" Width="8" Height="8"
+                                               Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <Button Style="{StaticResource MiniActionButtonStyle}" Command="{Binding DeleteSelectionCommand}" ToolTip="Delete selected annotation (Delete)">
+                            <Viewbox Stretch="Uniform" Width="16" Height="16">
+                                <Canvas Width="18" Height="18">
+                                    <Rectangle Canvas.Left="5" Canvas.Top="6" Width="8" Height="9"
+                                               Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                    <Line X1="4" Y1="6" X2="14" Y2="6"
+                                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                    <Line X1="7" Y1="4" X2="11" Y2="4"
+                                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" />
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                    </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <controls:AnnotationCanvasControl Grid.Row="1"
+                                          Grid.Column="1"
+                                          Margin="0,0,14,0"
+                                          ViewModel="{Binding}" />
+
+        <Border Grid.Row="1"
+                Grid.Column="2"
+                Padding="18"
+                Background="#FF111821"
+                CornerRadius="18">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          Padding="0,0,6,0">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource SidebarScrollBarStyle}" />
+                </ScrollViewer.Resources>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Expander x:Name="PresetsExpander"
+                              Grid.Row="0"
+                              IsExpanded="False"
+                              Style="{StaticResource SidebarExpanderStyle}">
+                    <Expander.Header>
+                        <TextBlock FontSize="17" FontWeight="SemiBold" Text="Presets" />
+                    </Expander.Header>
+                    <StackPanel>
+                        <ComboBox SelectedValuePath="Kind"
+                                  DisplayMemberPath="DisplayName"
+                                  ItemsSource="{Binding StylePresets}"
+                                  SelectedValue="{Binding SelectedPresetKind}"
+                                  Margin="0,0,0,8" />
+
+                        <TextBlock Foreground="#77FFFFFF"
+                                   Text="{Binding CurrentPresetDescription}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Expander>
+
+                    <Expander x:Name="PropertiesExpander"
+                              Grid.Row="1"
+                              IsExpanded="True"
+                              Style="{StaticResource SidebarExpanderStyle}">
+                    <Expander.Header>
+                        <TextBlock FontSize="17" FontWeight="SemiBold" Text="Properties" />
+                    </Expander.Header>
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,4" Text="Stroke Color" />
+                        <TextBox Text="{Binding StrokeColorHex, UpdateSourceTrigger=LostFocus}" />
+                        <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding RecentColors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource ColorSwatchButtonStyle}"
+                                            Background="{Binding Converter={StaticResource HexToBrushConverter}}"
+                                            Command="{Binding DataContext.ApplyStrokePresetCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Margin="0,8,0,4" Text="Fill Color" />
+                        <TextBox Text="{Binding FillColorHex, UpdateSourceTrigger=LostFocus}" />
+                        <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding RecentColors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource ColorSwatchButtonStyle}"
+                                            Background="{Binding Converter={StaticResource HexToBrushConverter}}"
+                                            Command="{Binding DataContext.ApplyFillPresetCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Margin="0,8,0,4" Text="Thickness" />
+                        <Slider Minimum="0" Maximum="14" Value="{Binding StrokeThickness}" />
+
+                        <TextBlock Margin="0,8,0,4" Text="Opacity" />
+                        <Slider Minimum="0.1" Maximum="1" Value="{Binding Opacity}" />
+
+                        <TextBlock Margin="0,8,0,4" Text="Font Size" />
+                        <Slider Minimum="10" Maximum="48" Value="{Binding FontSize}" />
+
+                        <TextBlock Margin="0,8,0,4" Text="Pixelate Strength" />
+                        <Slider Minimum="2" Maximum="28" Value="{Binding BlurStrength}" />
+                    </StackPanel>
+                </Expander>
+
+                    <Expander Grid.Row="2"
+                              IsExpanded="True"
+                              Margin="0,0,0,10"
+                              Style="{StaticResource SidebarExpanderStyle}">
+                    <Expander.Header>
+                        <TextBlock FontSize="17" FontWeight="SemiBold" Text="Layers" />
+                    </Expander.Header>
+                    <ListBox x:Name="LayersListBox"
+                             Style="{StaticResource LayerListStyle}"
+                             AllowDrop="True"
+                             ItemContainerStyle="{StaticResource LayerListItemStyle}"
+                             ItemsSource="{Binding LayerAnnotations}"
+                             SelectedItem="{Binding SelectedAnnotation, Mode=TwoWay}"
+                             ToolTip="Drag to reorder layers. Right-click to rename."
+                             PreviewMouseLeftButtonDown="LayersListBox_OnPreviewMouseLeftButtonDown"
+                             MouseMove="LayersListBox_OnMouseMove"
+                             DragOver="LayersListBox_OnDragOver"
+                             Drop="LayersListBox_OnDrop">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="Transparent">
+                                    <Border.ContextMenu>
+                                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                            <MenuItem Header="Rename Layer"
+                                                      Click="RenameLayerMenuItem_OnClick" />
+                                        </ContextMenu>
+                                    </Border.ContextMenu>
+                                    <DockPanel LastChildFill="True">
+                                        <TextBlock Margin="0,0,8,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#6DD3FC"
+                                                   FontSize="12"
+                                                   Text="≡" />
+                                        <TextBlock FontWeight="SemiBold"
+                                                   Foreground="#FFF7FAFD"
+                                                   TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource LayerDisplayNameConverter}">
+                                                    <Binding />
+                                                    <Binding RelativeSource="{RelativeSource AncestorType=Window}" Path="DataContext" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Expander>
+
+                    <Expander x:Name="LayerActionsExpander"
+                              Grid.Row="3"
+                              IsExpanded="False"
+                              Margin="0"
+                              Style="{StaticResource SidebarExpanderStyle}">
+                    <Expander.Header>
+                        <TextBlock FontSize="17" FontWeight="SemiBold" Text="Layer Actions" />
+                    </Expander.Header>
+                    <UniformGrid Columns="2">
+                        <Button Margin="0,0,8,8"
+                                Style="{StaticResource SideActionButtonStyle}"
+                                Command="{Binding BringForwardCommand}"
+                                Content="Forward" />
+                        <Button Margin="0,0,0,8"
+                                Style="{StaticResource SideActionButtonStyle}"
+                                Command="{Binding SendBackwardCommand}"
+                                Content="Backward" />
+                        <Button Margin="0,0,8,0"
+                                Style="{StaticResource SideActionButtonStyle}"
+                                Command="{Binding DeleteSelectionCommand}"
+                                Content="Delete" />
+                        <Button Margin="0"
+                                Style="{StaticResource SideActionButtonStyle}"
+                                Command="{Binding ClearCropCommand}"
+                                Content="Clear Crop" />
+                    </UniformGrid>
+                    </Expander>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <Border Grid.Row="2"
+                Grid.ColumnSpan="3"
+                Margin="0,14,0,0"
+                Padding="12,10"
+                Background="#99111821"
+                CornerRadius="14">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Left"
+                           Foreground="#CCFFFFFF"
+                           Text="{Binding StatusText}" />
+                <TextBlock DockPanel.Dock="Right"
+                           HorizontalAlignment="Right"
+                           Foreground="#66FFFFFF"
+                           Text="Shortcuts: V A R E L T Q N H B C | Ctrl+Z Ctrl+Y Ctrl+D Del | Arrows move | Shift+Arrows 10px | Ctrl++ Ctrl+- Ctrl+0" />
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

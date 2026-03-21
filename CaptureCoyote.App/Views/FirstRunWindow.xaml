@@ -1,0 +1,116 @@
+<Window x:Class="CaptureCoyote.App.Views.FirstRunWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Welcome to CaptureCoyote"
+        Width="760"
+        Height="680"
+        MinWidth="700"
+        MinHeight="620"
+        Background="#FF0C1118"
+        Foreground="White"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+    <Grid Margin="22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Border x:Name="BrandLogoContainer"
+                            Width="52"
+                            Height="52"
+                            Margin="0,0,14,0"
+                            Padding="4"
+                            Background="#1A1884C4"
+                            CornerRadius="16"
+                            Visibility="Collapsed">
+                        <Image x:Name="BrandLogoImage" Stretch="Uniform" Visibility="Collapsed" />
+                    </Border>
+                    <StackPanel>
+                        <TextBlock FontSize="28" FontWeight="SemiBold" Text="Welcome to CaptureCoyote" />
+                        <TextBlock Margin="0,4,0,0"
+                                   Foreground="#99FFFFFF"
+                                   Text="Screenshots that stay editable, searchable, and easy to revisit later." />
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Margin="0,18,0,0"
+                        Padding="18"
+                        Background="#FF111821"
+                        BorderBrush="#261884C4"
+                        BorderThickness="1"
+                        CornerRadius="18">
+                    <StackPanel>
+                        <TextBlock FontSize="20" FontWeight="SemiBold" Text="Capture -> Explain -> Save or Share" />
+                        <TextBlock Margin="0,8,0,0"
+                                   Foreground="#AAFFFFFF"
+                                   Text="CaptureCoyote is built for the common screenshot workflow: grab something quickly, add context fast, then save a flat image or an editable .coyote project you can reopen later."
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Margin="0,22,0,0" FontSize="20" FontWeight="SemiBold" Text="Startup Preferences" />
+                <TextBlock Margin="0,6,0,14"
+                           Foreground="#77FFFFFF"
+                           Text="These defaults keep the app fast out of the box. You can change all of them later in Settings."
+                           TextWrapping="Wrap" />
+
+                <CheckBox Margin="0,0,0,12"
+                          IsChecked="{Binding AutoCopyToClipboard}"
+                          Content="Auto-copy captures to the clipboard after capture" />
+
+                <CheckBox Margin="0,0,0,12"
+                          IsChecked="{Binding AutoOpenEditor}"
+                          Content="Open the editor immediately after every capture" />
+
+                <CheckBox Margin="0,0,0,12"
+                          IsChecked="{Binding ShowSplashScreenOnLaunch}"
+                          Content="Show the branded splash screen on launch instead of opening silently" />
+
+                <CheckBox Margin="0,0,0,12"
+                          IsChecked="{Binding LaunchOnWindowsStartup}"
+                          Content="Launch CaptureCoyote quietly to the tray when Windows starts" />
+
+                <CheckBox Margin="0,0,0,20"
+                          IsChecked="{Binding UseToolAwareDefaults}"
+                          Content="Use tool-aware annotation defaults for text, step markers, highlight, and pixelate" />
+
+                <TextBlock FontSize="20" FontWeight="SemiBold" Text="Default Annotation Preset" />
+                <TextBlock Margin="0,6,0,12"
+                           Foreground="#77FFFFFF"
+                           Text="Pick the starting visual language that feels most like your day-to-day use."
+                           TextWrapping="Wrap" />
+
+                <ComboBox Margin="0,0,0,16"
+                          DisplayMemberPath="DisplayName"
+                          SelectedValuePath="Kind"
+                          ItemsSource="{Binding StylePresetOptions}"
+                          SelectedValue="{Binding DefaultStylePreset}" />
+
+                <Border Padding="16"
+                        Background="#FF111821"
+                        BorderBrush="#221884C4"
+                        BorderThickness="1"
+                        CornerRadius="16">
+                    <StackPanel>
+                        <TextBlock FontWeight="SemiBold" Text="What this unlocks right away" />
+                        <TextBlock Margin="0,10,0,0" Foreground="#CCFFFFFF" Text="- Region, window, and full-screen capture with hotkeys" />
+                        <TextBlock Margin="0,6,0,0" Foreground="#CCFFFFFF" Text="- Reopenable .coyote projects with layered annotations" />
+                        <TextBlock Margin="0,6,0,0" Foreground="#CCFFFFFF" Text="- OCR-ready screenshots that can be searched later" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1"
+                    Margin="0,18,0,0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Width="108" Margin="0,0,10,0" Padding="12,8" Click="SkipButton_OnClick" Content="Skip" />
+            <Button Width="148" Padding="12,8" Click="StartButton_OnClick" Content="Start Capturing" />
+        </StackPanel>
+    </Grid>
+</Window>

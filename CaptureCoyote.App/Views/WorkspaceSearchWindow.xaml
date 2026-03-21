@@ -1,0 +1,490 @@
+<Window x:Class="CaptureCoyote.App.Views.WorkspaceSearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Search Snips"
+        Width="1180"
+        Height="780"
+        MinWidth="980"
+        MinHeight="620"
+        Background="#FF0C1118"
+        Foreground="White"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style x:Key="ResultButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="#FF0F171F" />
+            <Setter Property="BorderBrush" Value="#221884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF15212C" />
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#551884C4" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF0E2634" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Background" Value="#FF122435" />
+                    <Setter Property="BorderBrush" Value="#991884C4" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ToolbarButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#FF176A8D" />
+            <Setter Property="BorderBrush" Value="#441D96C8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF1E7EA7" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF135B79" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ToolbarDangerButtonStyle" TargetType="Button" BasedOn="{StaticResource ToolbarButtonStyle}">
+            <Setter Property="Background" Value="#FF8D2E3B" />
+            <Setter Property="BorderBrush" Value="#66F07C88" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FFA43A48" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FF762833" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ResultActionButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="88" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#101A232D" />
+            <Setter Property="BorderBrush" Value="#261884C4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1B2B3A48" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#22364558" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.42" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Border x:Name="BrandLogoContainer"
+                    Width="48"
+                    Height="48"
+                    Margin="0,0,14,0"
+                    Padding="4"
+                    Background="#1A1884C4"
+                    CornerRadius="16"
+                    Visibility="Collapsed">
+                <Image x:Name="BrandLogoImage" Stretch="Uniform" Visibility="Collapsed" />
+            </Border>
+            <StackPanel>
+                <TextBlock FontSize="28" FontWeight="SemiBold" Text="Search Snips" />
+                <TextBlock Margin="0,4,0,0"
+                           Foreground="#99FFFFFF"
+                           Text="Browse saved captures and editable projects with filters, sorting, OCR text, and annotation-aware search." />
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="0,18,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="170" />
+                <ColumnDefinition Width="170" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="SearchTextBox"
+                     Margin="0,0,14,0"
+                     Padding="12,8"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+
+            <ComboBox Grid.Column="1"
+                      Margin="0,0,14,0"
+                      ItemsSource="{Binding TypeFilters}"
+                      SelectedItem="{Binding SelectedTypeFilter}" />
+
+            <ComboBox Grid.Column="2"
+                      Margin="0,0,14,0"
+                      ItemsSource="{Binding ModeFilters}"
+                      SelectedItem="{Binding SelectedModeFilter}" />
+
+            <ComboBox Grid.Column="3"
+                      Margin="0,0,14,0"
+                      ItemsSource="{Binding DateFilters}"
+                      SelectedItem="{Binding SelectedDateFilter}" />
+
+            <ComboBox Grid.Column="4"
+                      Margin="0,0,14,0"
+                      ItemsSource="{Binding SortOptions}"
+                      SelectedItem="{Binding SelectedSortOption}" />
+
+            <Button Grid.Column="5"
+                    Style="{StaticResource ToolbarButtonStyle}"
+                    Command="{Binding ClearFiltersCommand}"
+                    Content="Clear Filters" />
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0,18,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <DockPanel>
+                <TextBlock FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="#FFF7FAFD"
+                           Text="{Binding ResultSummary}" />
+                <TextBlock DockPanel.Dock="Right"
+                           Margin="18,0,0,0"
+                           Foreground="#77FFFFFF"
+                           Text="{Binding ActiveFilterSummary}" />
+            </DockPanel>
+
+            <Border Grid.Row="1"
+                    Margin="0,12,0,0"
+                    Padding="14"
+                    Background="#66111821"
+                    BorderBrush="#331884C4"
+                    BorderThickness="1"
+                    CornerRadius="14">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasSelection}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               Text="{Binding SelectionSummary}" />
+
+                    <Button Grid.Column="1"
+                            Margin="12,0,0,0"
+                            Style="{StaticResource ToolbarButtonStyle}"
+                            Command="{Binding SelectVisibleItemsCommand}"
+                            Content="{Binding SelectVisibleButtonText}" />
+
+                    <Button Grid.Column="2"
+                            Margin="12,0,0,0"
+                            Style="{StaticResource ToolbarButtonStyle}"
+                            Command="{Binding RevealSelectedFoldersCommand}"
+                            Content="Open Folders" />
+
+                    <Button Grid.Column="3"
+                            Margin="12,0,0,0"
+                            Style="{StaticResource ToolbarDangerButtonStyle}"
+                            Command="{Binding DeleteSelectedCommand}"
+                            Content="Delete Selected" />
+
+                    <Button Grid.Column="4"
+                            Margin="12,0,0,0"
+                            Style="{StaticResource ToolbarButtonStyle}"
+                            Command="{Binding ClearSelectionCommand}"
+                            Content="Clear Selection" />
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2" Margin="0,14,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding FilteredItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox Grid.Column="0"
+                                              Margin="0,0,12,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              IsChecked="{Binding IsSelected}" />
+
+                                    <Button Grid.Column="1"
+                                            Style="{StaticResource ResultButtonStyle}"
+                                            Command="{Binding DataContext.OpenItemCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding Item}">
+                                        <Grid Margin="14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="112" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Width="96"
+                                                    Height="68"
+                                                    Background="#FF0B1117"
+                                                    BorderBrush="#221884C4"
+                                                    BorderThickness="1"
+                                                    CornerRadius="10">
+                                                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                                            </Border>
+
+                                            <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Grid.Column="0"
+                                                               FontSize="14"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#FFF8FBFF"
+                                                               VerticalAlignment="Center"
+                                                               Text="{Binding Title}" />
+
+                                                    <Grid Grid.Column="1"
+                                                          Margin="12,0,0,0"
+                                                          HorizontalAlignment="Right"
+                                                          VerticalAlignment="Center">
+                                                        <Border Padding="7,2"
+                                                                CornerRadius="9"
+                                                                ToolTip="{Binding BadgeToolTip}">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                    <Setter Property="Background" Value="#2F0F6CA5" />
+                                                                    <Setter Property="BorderBrush" Value="#6661C4FF" />
+                                                                    <Setter Property="BorderThickness" Value="1" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsEditableProject}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Viewbox Width="10" Height="10">
+                                                                    <Canvas Width="12" Height="12">
+                                                                        <Rectangle Canvas.Left="1" Canvas.Top="4" Width="6.5" Height="5.5"
+                                                                                   Stroke="#FFF6FAFD" StrokeThickness="1" />
+                                                                        <Rectangle Canvas.Left="4.5" Canvas.Top="2" Width="6.5" Height="5.5"
+                                                                                   Stroke="#FFF6FAFD" StrokeThickness="1" />
+                                                                    </Canvas>
+                                                                </Viewbox>
+                                                                <TextBlock Margin="5,0,0,0"
+                                                                           FontSize="10.5"
+                                                                           FontWeight="SemiBold"
+                                                                           Foreground="#FFF6FAFD"
+                                                                           Text="Project" />
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <Border Padding="7,2"
+                                                                CornerRadius="9"
+                                                                ToolTip="{Binding BadgeToolTip}">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                    <Setter Property="Background" Value="#3A8A5A14" />
+                                                                    <Setter Property="BorderBrush" Value="#55F5A623" />
+                                                                    <Setter Property="BorderThickness" Value="1" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsEditableProject}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Viewbox Width="10" Height="10">
+                                                                    <Canvas Width="12" Height="12">
+                                                                        <Rectangle Canvas.Left="1.5" Canvas.Top="2.5" Width="9" Height="7"
+                                                                                   RadiusX="1.5" RadiusY="1.5"
+                                                                                   Stroke="#FFF6FAFD" StrokeThickness="1" />
+                                                                        <Ellipse Canvas.Left="4.1" Canvas.Top="4.2" Width="3.8" Height="3.8"
+                                                                                 Stroke="#FFF6FAFD" StrokeThickness="1" />
+                                                                    </Canvas>
+                                                                </Viewbox>
+                                                                <TextBlock Margin="5,0,0,0"
+                                                                           FontSize="10.5"
+                                                                           FontWeight="SemiBold"
+                                                                           Foreground="#FFF6FAFD"
+                                                                           Text="Capture" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </Grid>
+                                                </Grid>
+                                                <TextBlock Margin="0,5,0,0"
+                                                           Foreground="#99FFFFFF"
+                                                           Text="{Binding Subtitle}" />
+                                                <TextBlock Margin="0,4,0,0"
+                                                           Foreground="#77FFFFFF"
+                                                           Text="{Binding TimestampLabel}" />
+                                                <TextBlock Margin="0,8,0,0"
+                                                           Foreground="#E6F2F6FA"
+                                                           FontSize="12.5"
+                                                           MaxHeight="36"
+                                                           Text="{Binding DetailedPreviewText}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+
+                                    <Button Grid.Column="2"
+                                            Style="{StaticResource ResultActionButtonStyle}"
+                                            Command="{Binding DataContext.RevealItemFolderCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding Item}"
+                                            IsEnabled="{Binding CanRevealInFolder}"
+                                            ToolTip="Open the containing folder for this item">
+                                        <TextBlock Text="Folder"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold" />
+                                    </Button>
+
+                                    <Button Grid.Column="3"
+                                            Style="{StaticResource ResultActionButtonStyle}"
+                                            Command="{Binding DataContext.OpenItemCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding Item}"
+                                            ToolTip="Open this snip in the editor">
+                                        <TextBlock Text="Open"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold" />
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <Border Background="#220F171F"
+                        BorderBrush="#221884C4"
+                        BorderThickness="1"
+                        CornerRadius="14"
+                        Padding="24">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasResults}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="#CCFFFFFF"
+                               Text="No snips matched the current text, mode, and date filters."
+                               TextWrapping="Wrap" />
+                </Border>
+            </Grid>
+        </Grid>
+
+        <TextBlock Grid.Row="3"
+                   Margin="0,16,0,0"
+                   Foreground="#66FFFFFF"
+                   Text="Tip: search matches names, source windows, OCR text, and text from callouts or annotations stored with each saved project." />
+    </Grid>
+</Window>

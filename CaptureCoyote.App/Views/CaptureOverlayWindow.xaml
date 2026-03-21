@@ -1,0 +1,150 @@
+<Window x:Class="CaptureCoyote.App.Views.CaptureOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Background="#FF0A0F16"
+        AllowsTransparency="False"
+        Cursor="Cross">
+    <Grid ClipToBounds="True">
+        <Image x:Name="BackgroundImage" Stretch="Fill" />
+        <Path x:Name="DimPath" Fill="#AA000000" IsHitTestVisible="False" />
+        <Canvas x:Name="OverlayCanvas">
+            <Rectangle x:Name="WindowHighlight"
+                       Stroke="#FF61C4FF"
+                       StrokeThickness="2.5"
+                       StrokeDashArray="6,3"
+                       RadiusX="12"
+                       RadiusY="12"
+                       Fill="#153DB2F2"
+                       Visibility="Collapsed"
+                       IsHitTestVisible="False" />
+
+            <Border x:Name="WindowBadge"
+                    MaxWidth="360"
+                    Background="#E6111821"
+                    BorderBrush="#7748C2FF"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="10,7"
+                    Visibility="Collapsed"
+                    IsHitTestVisible="False">
+                <StackPanel>
+                    <TextBlock x:Name="WindowBadgeTitle"
+                               Foreground="White"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock x:Name="WindowBadgeMeta"
+                               Margin="0,2,0,0"
+                               Foreground="#B7E7F9FF"
+                               FontSize="11" />
+                </StackPanel>
+            </Border>
+
+            <Rectangle x:Name="SelectionBorder"
+                       Stroke="White"
+                       StrokeThickness="2"
+                       RadiusX="8"
+                       RadiusY="8"
+                       Visibility="Collapsed"
+                       IsHitTestVisible="False" />
+
+            <Border x:Name="SelectionBadge"
+                    MinWidth="142"
+                    Background="#E6111821"
+                    BorderBrush="#553DD2FF"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="10,7"
+                    Visibility="Collapsed"
+                    IsHitTestVisible="False">
+                <StackPanel>
+                    <TextBlock x:Name="SelectionBadgeTitle"
+                               Foreground="White"
+                               FontSize="12"
+                               FontWeight="SemiBold" />
+                    <TextBlock x:Name="SelectionBadgeMeta"
+                               Margin="0,2,0,0"
+                               Foreground="#B7E7F9FF"
+                               FontSize="11" />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="MagnifierHost"
+                    Width="118"
+                    Height="138"
+                    CornerRadius="18"
+                    BorderBrush="#7748C2FF"
+                    BorderThickness="1"
+                    Background="#E6111821"
+                    Visibility="Collapsed"
+                    IsHitTestVisible="False">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="88" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Border Background="#FF0B1117"
+                            BorderBrush="#443DD2FF"
+                            BorderThickness="1"
+                            CornerRadius="12">
+                        <Grid ClipToBounds="True">
+                            <Image x:Name="MagnifierImage"
+                                   Stretch="Fill"
+                                   RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                            <Rectangle Width="1"
+                                       Margin="0,10"
+                                       Fill="#CCFFFFFF"
+                                       HorizontalAlignment="Center" />
+                            <Rectangle Height="1"
+                                       Margin="10,0"
+                                       Fill="#CCFFFFFF"
+                                       VerticalAlignment="Center" />
+                            <Border Width="14"
+                                    Height="14"
+                                    Background="#22000000"
+                                    BorderBrush="#CCFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1"
+                            Margin="0,8,0,0"
+                            Padding="7,4"
+                            Background="#880B1117"
+                            BorderBrush="#223DD2FF"
+                            BorderThickness="1"
+                            CornerRadius="10">
+                        <TextBlock x:Name="MagnifierText"
+                                   Foreground="#DDF4FBFF"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   TextAlignment="Center" />
+                    </Border>
+                </Grid>
+            </Border>
+        </Canvas>
+
+        <Border HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="0,20,0,0"
+                Background="#CC101418"
+                BorderBrush="#221884C4"
+                BorderThickness="1"
+                CornerRadius="14"
+                Padding="14,8"
+                IsHitTestVisible="False">
+            <TextBlock x:Name="InstructionText"
+                       Foreground="White"
+                       FontSize="13"
+                       FontWeight="SemiBold" />
+        </Border>
+    </Grid>
+</Window>
