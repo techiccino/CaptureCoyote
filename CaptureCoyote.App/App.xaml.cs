@@ -6,6 +6,9 @@ using CaptureCoyote.App.Views;
 using CaptureCoyote.Core.Models;
 using CaptureCoyote.Infrastructure.Services;
 using CaptureCoyote.Services.Abstractions;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
+using Windows.Storage;
 
 namespace CaptureCoyote.App;
 
@@ -39,8 +42,10 @@ public partial class App : System.Windows.Application
 
             base.OnStartup(e);
 
-            var startupProjectPath = ResolveStartupProjectPath(e.Args);
-            var isStartupLaunch = string.IsNullOrWhiteSpace(startupProjectPath) && ContainsStartupLaunchFlag(e.Args);
+            var packagedActivation = TryGetPackagedActivationInfo();
+            var startupProjectPath = ResolveStartupProjectPath(e.Args, packagedActivation?.FilePath);
+            var isStartupLaunch = packagedActivation?.IsStartupTask == true ||
+                                  (string.IsNullOrWhiteSpace(startupProjectPath) && ContainsStartupLaunchFlag(e.Args));
             if (!string.IsNullOrWhiteSpace(startupProjectPath))
             {
                 AppDiagnostics.LogInfo($"Startup project path detected: {startupProjectPath}");
@@ -214,8 +219,15 @@ public partial class App : System.Windows.Application
             System.Windows.MessageBoxImage.Error);
     }
 
-    private static string? ResolveStartupProjectPath(string[] args)
+    private static string? ResolveStartupProjectPath(string[] args, string? packagedActivationPath = null)
     {
+        if (!string.IsNullOrWhiteSpace(packagedActivationPath) && File.Exists(packagedActivationPath))
+        {
+            return Path.GetExtension(packagedActivationPath).Equals(".coyote", StringComparison.OrdinalIgnoreCase)
+                ? packagedActivationPath
+                : null;
+        }
+
         if (args.Length == 0)
         {
             return null;
@@ -239,6 +251,51 @@ public partial class App : System.Windows.Application
     private static bool ContainsStartupLaunchFlag(IEnumerable<string> args)
     {
         return args.Any(arg => string.Equals(arg, "--startup", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static PackagedActivationInfo? TryGetPackagedActivationInfo()
+    {
+        if (!IsPackaged())
+        {
+            return null;
+        }
+
+        try
+        {
+            var args = AppInstance.GetActivatedEventArgs();
+            return args.Kind switch
+            {
+                ActivationKind.File => new PackagedActivationInfo(ResolvePackagedFilePath(args as FileActivatedEventArgs), false),
+                ActivationKind.StartupTask => new PackagedActivationInfo(null, true),
+                _ => null
+            };
+        }
+        catch (Exception ex)
+        {
+            AppDiagnostics.LogException("Could not inspect packaged activation info.", ex);
+            return null;
+        }
+    }
+
+    private static string? ResolvePackagedFilePath(FileActivatedEventArgs? args)
+    {
+        return args?.Files?
+            .OfType<IStorageItem>()
+            .Select(item => item.Path)
+            .FirstOrDefault(path => Path.GetExtension(path).Equals(".coyote", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsPackaged()
+    {
+        try
+        {
+            _ = Package.Current;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static void ApplyStartupPreferenceMigration(AppSettings settings)
@@ -287,4 +344,6 @@ public partial class App : System.Windows.Application
             }
         }).Task.Unwrap();
     }
+
+    private sealed record PackagedActivationInfo(string? FilePath, bool IsStartupTask);
 }

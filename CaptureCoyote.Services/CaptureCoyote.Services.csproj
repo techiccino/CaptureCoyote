@@ -5,7 +5,8 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net8.0-windows10.0.19041.0</TargetFrameworks>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>

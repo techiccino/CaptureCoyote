@@ -1,4 +1,6 @@
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CaptureCoyote.Core.Enums;
@@ -16,9 +18,12 @@ namespace CaptureCoyote.Infrastructure.Helpers;
 
 internal static class ImageHelper
 {
-    public static byte[] CaptureToPng(PixelRect bounds)
+    public static (byte[] PixelBuffer, int PixelWidth, int PixelHeight, int PixelStride) CaptureToPixelBuffer(PixelRect bounds)
     {
-        using var bitmap = new DrawingBitmap((int)Math.Round(bounds.Width), (int)Math.Round(bounds.Height), DrawingPixelFormat.Format32bppPArgb);
+        var width = Math.Max(1, (int)Math.Round(bounds.Width));
+        var height = Math.Max(1, (int)Math.Round(bounds.Height));
+
+        using var bitmap = new DrawingBitmap(width, height, DrawingPixelFormat.Format32bppPArgb);
         using var graphics = DrawingGraphics.FromImage(bitmap);
         graphics.CopyFromScreen(
             (int)Math.Round(bounds.X),
@@ -28,9 +33,20 @@ internal static class ImageHelper
             new DrawingSize(bitmap.Width, bitmap.Height),
             DrawingCopyPixelOperation.SourceCopy);
 
-        using var stream = new MemoryStream();
-        bitmap.Save(stream, DrawingImageFormat.Png);
-        return stream.ToArray();
+        var rect = new DrawingRectangle(0, 0, bitmap.Width, bitmap.Height);
+        var bitmapData = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, DrawingPixelFormat.Format32bppPArgb);
+
+        try
+        {
+            var stride = Math.Abs(bitmapData.Stride);
+            var pixelBuffer = new byte[stride * bitmap.Height];
+            Marshal.Copy(bitmapData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
+            return (pixelBuffer, bitmap.Width, bitmap.Height, stride);
+        }
+        finally
+        {
+            bitmap.UnlockBits(bitmapData);
+        }
     }
 
     public static byte[]? CaptureWindowToPng(nint windowHandle, PixelRect bounds)
@@ -74,6 +90,18 @@ internal static class ImageHelper
         return output.ToArray();
     }
 
+    public static byte[] CropBitmapToPng(byte[] pixelBuffer, int pixelWidth, int pixelHeight, int pixelStride, PixelRect sourceRegion)
+    {
+        var source = CreateBitmapSource(pixelBuffer, pixelWidth, pixelHeight, pixelStride);
+        var safeX = Math.Max(0, (int)Math.Round(sourceRegion.X));
+        var safeY = Math.Max(0, (int)Math.Round(sourceRegion.Y));
+        var safeWidth = Math.Min(source.PixelWidth - safeX, Math.Max(1, (int)Math.Round(sourceRegion.Width)));
+        var safeHeight = Math.Min(source.PixelHeight - safeY, Math.Max(1, (int)Math.Round(sourceRegion.Height)));
+        var cropped = new CroppedBitmap(source, new Int32Rect(safeX, safeY, safeWidth, safeHeight));
+        cropped.Freeze();
+        return Encode(cropped, ImageFileFormat.Png);
+    }
+
     public static BitmapSource ToBitmapSource(byte[] bytes)
     {
         using var stream = new MemoryStream(bytes);
@@ -81,6 +109,21 @@ internal static class ImageHelper
         var frame = decoder.Frames[0];
         frame.Freeze();
         return frame;
+    }
+
+    public static BitmapSource CreateBitmapSource(byte[] pixelBuffer, int pixelWidth, int pixelHeight, int pixelStride)
+    {
+        var bitmap = BitmapSource.Create(
+            pixelWidth,
+            pixelHeight,
+            96,
+            96,
+            PixelFormats.Pbgra32,
+            null,
+            pixelBuffer,
+            pixelStride);
+        bitmap.Freeze();
+        return bitmap;
     }
 
     public static byte[] Encode(BitmapSource bitmap, ImageFileFormat format, int jpegQuality = 92)

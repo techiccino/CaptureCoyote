@@ -17,7 +17,7 @@ if ([string]::IsNullOrWhiteSpace($Version) -and (Test-Path $propsPath)) {
 }
 
 if ([string]::IsNullOrWhiteSpace($Version)) {
-    $Version = "1.2.3"
+    $Version = "1.2.5"
 }
 
 Write-Host "Publishing CaptureCoyote to $publishDir ..."

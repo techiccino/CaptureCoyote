@@ -1,4 +1,3 @@
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -38,7 +37,7 @@ internal sealed class CaptureOverlayCoordinator(IWindowLocatorService windowLoca
     public async Task<PixelRect?> ShowAsync(DesktopSnapshot snapshot, CaptureMode mode, CancellationToken cancellationToken = default)
     {
         _mode = mode;
-        var decodedDesktop = DecodeBitmap(snapshot.ImagePngBytes);
+        var decodedDesktop = CreateBitmap(snapshot);
 
         foreach (var monitor in snapshot.Monitors)
         {
@@ -400,12 +399,18 @@ internal sealed class CaptureOverlayCoordinator(IWindowLocatorService windowLoca
             : $"{trimmed[..69]}...";
     }
 
-    private static BitmapSource DecodeBitmap(byte[] bytes)
+    private static BitmapSource CreateBitmap(DesktopSnapshot snapshot)
     {
-        using var stream = new MemoryStream(bytes);
-        var decoder = BitmapDecoder.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-        var frame = decoder.Frames[0];
-        frame.Freeze();
-        return frame;
+        var bitmap = BitmapSource.Create(
+            snapshot.PixelWidth,
+            snapshot.PixelHeight,
+            96,
+            96,
+            System.Windows.Media.PixelFormats.Pbgra32,
+            null,
+            snapshot.PixelBuffer,
+            snapshot.PixelStride);
+        bitmap.Freeze();
+        return bitmap;
     }
 }
